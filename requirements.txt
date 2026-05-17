@@ -1,0 +1,26 @@
+# 冬 QQ聊天机器人 — 依赖清单
+# Python 3.12 / Windows 10 / PyInstaller 打包
+
+# === 核心通信 ===
+requests>=2.28
+websockets>=10.0
+
+# === 中文分词 ===
+jieba>=0.42
+
+# === 图像与截屏 ===
+Pillow>=9.0
+pyautogui>=0.9
+
+# === GUI Agent（桌面操作）===
+uiautomation>=2.0
+pygetwindow>=0.0
+
+# === OCR（CPU only，后续换轻量方案）===
+easyocr>=1.7
+
+# === 桌宠（Pet/ 目录）===
+PyQt5>=5.15
+PyQtWebEngine>=5.15
+SpeechRecognition>=3.10
+psutil>=5.9

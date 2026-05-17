@@ -1,0 +1,8 @@
+# 冬桌宠 — 补充依赖
+# 核心依赖见 ../requirements.txt
+
+# === 语音合成（免费，免 API Key）===
+edge-tts>=6.0
+
+# === 音频播放 ===
+pygame>=2.5

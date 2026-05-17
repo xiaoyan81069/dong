@@ -1,0 +1,121 @@
+# 敏感文件
+.env
+*.key
+*_secret*
+
+# 日志
+*.log
+dong_crash.log
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 运行时数据 (含敏感对话)
+chat_history.txt
+dong_memory.json
+dong_intimacy.json
+dong_grudges.json
+dong_amygdala_memory.json
+dong_regret_log.json
+dong_monologues.json
+dong_health_history.jsonl
+
+# 备份
+dong_backups/
+Archive/
+*.bak
+
+# 截图
+dong_screenshots/
+*.png
+*.jpg
+*.jpeg
+
+# 下载的媒体
+data/media/
+emojis/
+*.wav
+*.mp3
+
+# 看门狗日志
+watchdog.log
+
+# 测试缓存
+dong_test_cache/
+
+# 旧日程归档
+dong_schedule_archive/
+
+# 待办事项（含个人信息）
+待办事项.txt
+
+# 工厂输入数据
+dong_factory_input.json
+dong_lang_features.json
+
+# 监控HTML（开发中，含路径）
+desktop_monitor.html
+monitor_dong_scheme*.html
+
+# 图片索引
+image_index.json
+
+# 优化器状态
+dong_optimizer_state.json
+dong_optimizer.log
+dong_update_log.jsonl
+
+# 运行态JSON（每次运行生成，不应入版本库）
+Logs/
+dong/claude_cmd.json
+dong/claude_resp.json
+dong/claude_dc_memory.json
+dong/claude_dc_log.jsonl
+dong/claude_sessions.json
+dong/dong_status.json
+dong/dong_cycle.json
+dong/dong_conflict_tracker.json
+dong/dong_expression_state.json
+dong/dong_factory_archive.json
+dong/dong_factory_hashes.json
+dong/dong_lastday.json
+dong/dong_today_schedule.json
+dong/agent_task_state.json
+dong/task_history.jsonl
+dong/project_index.json
+dong/agent_project_index.json
+dong/agent_team_state.json
+dong/patch_history.jsonl
+dong/agent_sessions.json
+dong/agent_project_memory.json
+dong/agent_user_prefs.json
+dong/agent_audit.jsonl
+dong/agent_doc_cache.json
+dong/sandbox/
+dong/dong_dialogue_segments.jsonl
+dong/dong_finance.json
+dong/dong_game.json
+dong/dong_mail.json
+dong/dong_sleep_queue.json
+dong/dong_style_fingerprint.json
+
+# 运行态JSON — Pet/
+Pet/companion_memory.json
+
+DIGITAL_LIFE_ARCHIVE.md
+Pet/README.md
+启动.bat
+启动.ps1
+Pet/启动.bat
+HANDOFF_小登.md

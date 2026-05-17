@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>冬</title>
+    <script src="qrc:///qtwebchannel/qwebchannel.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            width: 120px; height: 140px;
+            background: transparent;
+            overflow: hidden;
+            user-select: none;
+        }
+        #pet-container {
+            position: relative;
+            width: 120px; height: 140px;
+        }
+        .pet-layer {
+            position: absolute; top: 0; left: 0;
+            width: 120px; height: 140px;
+            pointer-events: none;
+        }
+        /* 默认 CSS 绘制的冬（图片未加载时回退） */
+        #css-fallback {
+            position: absolute; top: 0; left: 0;
+            width: 120px; height: 140px;
+        }
+        #css-fallback.hidden { display: none; }
+
+        /* 心情气泡 */
+        #mood-bubble {
+            position: absolute; top: -8px; right: -4px;
+            font-size: 20px; pointer-events: none;
+            transition: opacity 0.5s; opacity: 0;
+            z-index: 10;
+        }
+        /* 离线遮罩 */
+        #offline-mask {
+            display: none;
+            position: absolute; bottom: 0; left: 0; right: 0;
+            text-align: center; color: #aaa; font-size: 8px;
+            z-index: 20;
+        }
+        /* 呼吸动画 */
+        @keyframes petBreathe {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+        }
+        #pet-container { animation: petBreathe 2s ease-in-out infinite; }
+    </style>
+</head>
+<body>
+    <div id="pet-container">
+        <!-- CSS 回退层（没有 PNG 图片时使用） -->
+        <div id="css-fallback">
+            <svg width="120" height="140" viewBox="0 0 120 140">
+                <!-- 身体 -->
+                <ellipse cx="60" cy="95" rx="28" ry="30" fill="#f0d8b8"/>
+                <!-- 头 -->
+                <circle cx="60" cy="48" r="32" fill="#ffe8d0"/>
+                <!-- 头发 -->
+                <ellipse cx="60" cy="28" rx="34" ry="20" fill="#3a2a1a"/>
+                <ellipse cx="40" cy="48" rx="6" ry="14" fill="#3a2a1a"/>
+                <ellipse cx="80" cy="48" rx="6" ry="14" fill="#3a2a1a"/>
+                <!-- 眼睛 -->
+                <circle id="css-eye-l" cx="48" cy="45" r="4" fill="#2a1a0a"/>
+                <circle id="css-eye-r" cx="72" cy="45" r="4" fill="#2a1a0a"/>
+                <!-- 腮红 -->
+                <circle cx="38" cy="52" r="6" fill="rgba(255,150,150,0.4)"/>
+                <circle cx="82" cy="52" r="6" fill="rgba(255,150,150,0.4)"/>
+                <!-- 嘴 -->
+                <path id="css-mouth" d="M54 56 Q60 62 66 56" stroke="#d08080" stroke-width="1.5" fill="none"/>
+            </svg>
+        </div>
+
+        <!-- 图片叠加层（有资产时使用） -->
+        <img id="companion-layer" class="pet-layer" src="assets/pet/companion_empty.png"
+             onerror="this.style.display='none'" alt="">
+        <img id="clothes-layer" class="pet-layer" src="assets/pet/clothes_empty.png"
+             onerror="this.style.display='none'" alt="">
+        <img id="head-layer" class="pet-layer" src="assets/pet/head_normal.png"
+             onerror="document.getElementById('css-fallback').classList.remove('hidden')" alt="">
+
+        <!-- 心情气泡 -->
+        <div id="mood-bubble"></div>
+        <!-- 离线遮罩 -->
+        <div id="offline-mask">冬在休眠...</div>
+    </div>
+
+    <script src="pet_mini.js"></script>
+</body>
+</html>

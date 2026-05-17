@@ -1,0 +1,146 @@
+/* L4 灵魂面板 — 手写笔记本风格 */
+
+#view-l4 {
+    background: linear-gradient(135deg, #f5f0e5 0%, #efe8d8 40%, #f2ecd8 100%);
+    font-family: 'Ma Shan Zheng', 'STKaiti', 'KaiTi', 'SimSun', serif;
+    color: #2a1a0a;
+    padding: 16px 14px 50px;
+    overflow-y: auto;
+    position: relative;
+}
+
+/* 纸张纹理 */
+#view-l4::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background:
+        repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(139,111,78,0.06) 28px, rgba(139,111,78,0.06) 29px),
+        radial-gradient(ellipse at 20% 80%, rgba(200,180,140,0.15) 0%, transparent 50%);
+    pointer-events: none; z-index: 0;
+}
+
+#view-l4 > * { position: relative; z-index: 1; }
+
+#view-l4 h3 {
+    font-size: 18px; text-align: center;
+    margin-bottom: 12px; color: #5a3a1a;
+    font-weight: normal; letter-spacing: 4px;
+}
+
+/* 冰霜覆盖层 */
+#l4-frost {
+    display: none;
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 3px,
+        rgba(180,200,230,0.1) 3px,
+        rgba(180,200,230,0.1) 6px
+    );
+    pointer-events: none; z-index: 50;
+    border: 3px solid rgba(150,180,220,0.3);
+    border-radius: 2px;
+}
+
+/* 激素笔记 */
+#l4-section-hormones { margin-bottom: 18px; }
+.l4-section-title {
+    font-size: 14px; color: #8b6f4e;
+    border-bottom: 1px dashed #c8b898;
+    padding-bottom: 4px; margin-bottom: 8px;
+}
+.l4-note-line {
+    font-size: 15px; line-height: 1.8;
+    padding-left: 8px; color: #3a2a1a;
+    letter-spacing: 1px;
+}
+.l4-hormone-label {
+    font-size: 11px; color: #8b6f4e;
+    background: rgba(200,180,140,0.2);
+    padding: 1px 4px; border-radius: 3px;
+    margin-right: 4px;
+}
+
+/* 杏仁核橘猫 */
+#l4-section-cat {
+    text-align: center; margin-bottom: 18px;
+    padding: 10px; border: 1px solid #d8c8a8;
+    border-radius: 6px; background: rgba(255,250,240,0.5);
+}
+.l4-cat-icon { font-size: 42px; transition: all 0.5s; }
+.cat-sleepy { filter: brightness(1); }
+.cat-alert { filter: brightness(1.1) saturate(1.2); }
+.cat-explode {
+    filter: brightness(1.2) saturate(1.5);
+    animation: catShake 0.2s ease-in-out infinite alternate;
+}
+@keyframes catShake {
+    from { transform: translateX(-2px) rotate(-3deg); }
+    to { transform: translateX(2px) rotate(3deg); }
+}
+.l4-cat-text { font-size: 12px; color: #6a5a4a; margin-top: 4px; }
+
+/* 记仇表 */
+#l4-section-grudges { margin-bottom: 18px; }
+.l4-grudge-item {
+    padding: 6px 8px; margin-bottom: 4px;
+    background: rgba(255,240,200,0.4);
+    border-left: 3px solid #e8c860;
+    border-radius: 0 4px 4px 0;
+    font-size: 13px; position: relative;
+}
+.l4-grudge-item.aged {
+    background: rgba(240,230,210,0.5);
+    border-left-color: #c8b880;
+    filter: sepia(0.2);
+}
+.l4-grudge-what { color: #4a3a2a; }
+.l4-grudge-expire { font-size: 10px; color: #9a8a7a; margin-top: 2px; }
+
+/* 记忆 */
+#l4-section-memories { margin-bottom: 18px; }
+.l4-memory-item {
+    font-size: 13px; line-height: 1.6;
+    color: #5a4a3a; padding-left: 4px;
+}
+
+/* 系统健康 */
+#l4-section-health { margin-bottom: 18px; }
+#l4-health { font-size: 11px; color: #8a7a6a; font-style: italic; }
+
+/* 金融账本 */
+#l4-section-finance {
+    margin-top: 8px; padding: 10px;
+    border-top: 2px solid #c8b898;
+    background: rgba(255,250,240,0.4);
+}
+.l4-balance {
+    font-size: 15px; margin-bottom: 8px;
+    padding-bottom: 4px; border-bottom: 1px dotted #c8b898;
+}
+.l4-balance-num {
+    font-size: 20px; font-weight: bold;
+    color: #4a6a3a;
+}
+.l4-balance-num.zero {
+    color: #6a1a1a;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    font-weight: bold;
+}
+.l4-tx-line {
+    font-size: 12px; padding: 2px 0;
+    padding-left: 8px; line-height: 1.5;
+}
+.l4-tx-line.income { color: #3a6a8a; }
+.l4-tx-line.expense { color: #2a2a2a; }
+
+/* 充值按钮 */
+#l4-recharge-btn {
+    display: block; margin: 10px auto 0;
+    background: #8b6f4e; color: #fff;
+    border: none; padding: 6px 16px; border-radius: 4px;
+    cursor: pointer; font-size: 12px;
+    font-family: inherit;
+}
+#l4-recharge-btn:hover { background: #6a5a3a; }

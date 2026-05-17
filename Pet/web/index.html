@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=400, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>冬 · 桌面宠物</title>
+    <link rel="stylesheet" href="shared/common.css">
+    <link rel="stylesheet" href="css/l2_exterior.css">
+    <link rel="stylesheet" href="css/l4_soul.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            width: 400px; height: 600px;
+            overflow: hidden;
+            background: transparent;
+            font-family: 'Microsoft YaHei', sans-serif;
+            user-select: none;
+            border-radius: 12px;
+        }
+
+        /* 视图容器 */
+        .view {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 40px;
+            display: none;
+            overflow-y: auto;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .view.active { display: block; }
+
+        /* L3 内景 */
+        #view-l3 {
+            background: linear-gradient(180deg, #1e2d4a 0%, #2a3a5c 100%);
+            color: #e0d8c8;
+        }
+        #l3-room {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 75%; height: 55%;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 20px;
+            text-align: center;
+            transition: opacity 0.4s ease;
+        }
+        .l3-hotspot {
+            background: rgba(255,255,255,0.08);
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+        .l3-hotspot:hover { background: rgba(255,255,255,0.2); }
+
+        /* L4 面板 */
+        #view-l4 {
+            background: #f5f0e5;
+            color: #3a2a1a;
+        }
+
+        /* 底部导航 */
+        .nav-bar {
+            position: absolute; bottom: 0; left: 0; right: 0;
+            height: 40px;
+            background: rgba(20, 20, 35, 0.95);
+            display: flex; justify-content: space-around; align-items: center;
+            z-index: 100;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            border-radius: 0 0 12px 12px;
+            backdrop-filter: blur(5px);
+        }
+        .nav-tab {
+            background: none; border: none; color: #a09888;
+            font-size: 12px; cursor: pointer; padding: 8px 20px;
+            transition: color 0.3s;
+        }
+        .nav-tab.active {
+            color: #ffaa55;
+            border-bottom: 2px solid #ffaa55;
+        }
+
+        /* 右上角控件 */
+        .top-controls {
+            position: absolute; top: 8px; right: 8px; z-index: 110;
+            display: flex; gap: 8px; align-items: center;
+        }
+        #btn-minimize {
+            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+            color: #e0d8c8; width: 24px; height: 24px; border-radius: 4px;
+            cursor: pointer; font-size: 14px; line-height: 24px; text-align: center;
+        }
+        #btn-minimize:hover { background: rgba(255,255,255,0.2); }
+        #connection-status {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: #8b1a1a; transition: background 0.5s;
+        }
+        #connection-status.connected { background: #4a8a3a; }
+
+        /* 离线遮罩 */
+        #offline-overlay {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(26, 26, 46, 0.95); color: #fff;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center; z-index: 999;
+            opacity: 0; pointer-events: none; transition: opacity 0.5s;
+        }
+        #offline-overlay.show { opacity: 1; pointer-events: auto; }
+
+        /* L4 信件书写 */
+        #l4-section-mail {
+            margin-top: 18px; padding-top: 12px;
+            border-top: 1px dashed #c8b898;
+        }
+        .l4-mail-textarea {
+            width: 100%; height: 60px; resize: none;
+            background: rgba(255,250,240,0.3); border: 1px solid #d8c8a8;
+            border-radius: 4px; padding: 8px;
+            font-family: 'Ma Shan Zheng', 'STKaiti', 'KaiTi', serif;
+            font-size: 14px; color: #3a2a1a; outline: none;
+        }
+        .l4-mail-textarea::placeholder { color: #a09080; }
+        #l4-send-mail-btn {
+            display: block; margin: 8px auto 0; background: #c84040; color: #fff;
+            border: none; padding: 6px 16px; border-radius: 4px;
+            cursor: pointer; font-size: 12px; font-family: inherit;
+        }
+        #l4-send-mail-btn:hover { background: #a03030; }
+
+        /* ===== L3 商店/背包模态层 ===== */
+        .l3-modal-overlay {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(10, 15, 30, 0.85); z-index: 70;
+            display: flex; justify-content: center; align-items: center;
+            backdrop-filter: blur(3px);
+        }
+        .l3-modal-overlay.hidden { display: none; }
+        .wooden-shelf {
+            width: 85%; max-height: 80%; padding: 20px;
+            background: linear-gradient(180deg, #d8c8a8 0%, #c8b898 100%);
+            border-radius: 8px; border: 3px solid #8b6f4e;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.2), 0 10px 30px rgba(0,0,0,0.5);
+            color: #3a2a1a; overflow-y: auto;
+        }
+        .wooden-shelf h3 { text-align: center; font-size: 16px; margin-bottom: 15px; color: #5a3a1a; }
+        .l3-shop-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .l3-item-card {
+            background: rgba(255,250,240,0.6); border-radius: 6px; padding: 10px;
+            text-align: center; border: 1px solid #b8a888; cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .l3-item-card:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+        .l3-item-icon { font-size: 24px; margin-bottom: 4px; }
+        .l3-item-name { font-size: 12px; font-weight: bold; margin-bottom: 2px; }
+        .l3-item-price { font-size: 10px; color: #6a5a4a; }
+        .l3-modal-close {
+            display: block; margin: 15px auto 0; background: #8b6f4e; color: #fff;
+            border: none; padding: 6px 20px; border-radius: 4px; cursor: pointer;
+            font-size: 12px;
+        }
+        .l3-modal-close:hover { background: #6a5a3a; }
+    </style>
+</head>
+<body>
+    <!-- 离线遮罩 -->
+    <div id="offline-overlay" class="show">
+        <div style="font-size:24px;margin-bottom:10px;">冬在休眠...</div>
+        <div style="font-size:14px;color:#a09888;">请启动后端唤醒她</div>
+    </div>
+
+    <!-- 右上角控件 -->
+    <div class="top-controls">
+        <div id="connection-status"></div>
+        <button id="btn-minimize">&minus;</button>
+    </div>
+
+    <!-- ===== L2 外景 ===== -->
+    <div id="view-l2" class="view active">
+        <div id="l2-sky"></div>
+        <div id="l2-celestial"></div>
+        <div id="l2-ground"></div>
+        <div id="l2-house">
+            <div id="l2-house-roof"></div>
+            <div id="l2-house-body">
+                <div id="l2-house-window"></div>
+                <div id="l2-house-door" onclick="onHouseDoorClick()"></div>
+            </div>
+        </div>
+        <div id="l2-mailbox" onclick="onMailboxClick()">
+            <div id="l2-mail-flag"></div>
+            <div id="l2-mailbox-body">
+                <div id="l2-mailbox-slot"></div>
+            </div>
+            <div id="l2-mailbox-post"></div>
+        </div>
+        <canvas id="l2-snow-canvas"></canvas>
+        <div id="l2-weather-label">飘雪中</div>
+    </div>
+
+    <!-- ===== L3 内景 ===== -->
+    <div id="view-l3" class="view">
+        <div id="l3-scene-label" style="position:absolute;top:12px;left:15px;color:#ffaa55;font-size:14px;"></div>
+        <div id="l3-activity" style="position:absolute;top:12px;right:15px;color:#e0d8c8;font-size:12px;"></div>
+        <div id="l3-room"></div>
+        <div id="l3-equipped" style="position:absolute;bottom:50px;left:15px;font-size:11px;color:#a09888;"></div>
+        <!-- 商店模态层 -->
+        <div id="l3-shop-overlay" class="l3-modal-overlay hidden">
+            <div class="l3-modal-content wooden-shelf">
+                <h3>冬的杂货铺</h3>
+                <div id="l3-shop-list" class="l3-shop-grid"></div>
+                <button class="l3-modal-close" onclick="closeL3Modal()">离开</button>
+            </div>
+        </div>
+        <!-- 背包模态层 -->
+        <div id="l3-inventory-overlay" class="l3-modal-overlay hidden">
+            <div class="l3-modal-content wooden-shelf">
+                <h3>背包 & 装备</h3>
+                <div id="l3-inv-list" class="l3-shop-grid"></div>
+                <button class="l3-modal-close" onclick="closeL3Modal()">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== L4 灵魂面板 ===== -->
+    <div id="view-l4" class="view">
+        <div id="l4-frost"></div>
+        <h3>冬的笔记本</h3>
+        <div id="l4-section-hormones">
+            <div class="l4-section-title">激素笔迹</div>
+            <div id="l4-hormone-notes"></div>
+        </div>
+        <div id="l4-section-cat">
+            <div id="l4-cat"></div>
+        </div>
+        <div id="l4-section-grudges">
+            <div class="l4-section-title">记仇表</div>
+            <div id="l4-grudges"></div>
+        </div>
+        <div id="l4-section-memories">
+            <div class="l4-section-title">最近记忆</div>
+            <div id="l4-memories"></div>
+        </div>
+        <div id="l4-section-health">
+            <div class="l4-section-title">心跳</div>
+            <div id="l4-health"></div>
+        </div>
+        <div id="l4-section-finance">
+            <div id="l4-finance"></div>
+            <button id="l4-recharge-btn" onclick="recharge(50)">投币 50 ⭐</button>
+        </div>
+        <!-- 信件书写 -->
+        <div id="l4-section-mail">
+            <div class="l4-section-title">邮筒寄信</div>
+            <textarea id="l4-mail-content" class="l4-mail-textarea" placeholder="在这里写下想说的话..."></textarea>
+            <button id="l4-send-mail-btn" onclick="sendLetter('冬', document.getElementById('l4-mail-content').value)">投递信件 💌</button>
+        </div>
+    </div>
+
+    <!-- Toast 容器 -->
+    <div id="toast-container"></div>
+
+    <!-- 底部导航 -->
+    <div class="nav-bar">
+        <button class="nav-tab active" data-view="l2">草原</button>
+        <button class="nav-tab" data-view="l3">小屋</button>
+        <button class="nav-tab" data-view="l4">笔记</button>
+    </div>
+
+    <!-- JS 加载 -->
+    <script src="qrc:///qtwebchannel/qwebchannel.js"></script>
+    <script src="shared/common.js"></script>
+    <script src="js/l2_exterior.js"></script>
+    <script src="js/l3_interior.js"></script>
+    <script src="js/l4_soul.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
